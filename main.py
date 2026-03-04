@@ -4,6 +4,9 @@ FastAPI main application entry point for Intelli-Credit APIs.
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+import os
+
 from api.upload_routes import router as upload_router
 from api.score_routes import router as score_router
 from api.cam_routes import router as cam_router
@@ -15,6 +18,9 @@ app = FastAPI(
     description="API for AI-Powered Credit Appraisal Engine",
     version="1.0.0"
 )
+
+os.makedirs("generated_cams", exist_ok=True)
+app.mount("/generated_cams", StaticFiles(directory="generated_cams"), name="generated_cams")
 
 # Add CORS middleware
 app.add_middleware(

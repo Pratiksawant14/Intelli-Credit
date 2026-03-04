@@ -7,7 +7,12 @@ import { useAppContext } from '../context/AppContext';
 
 export default function ScoreView() {
     const { sessionData, updateSession } = useAppContext();
-    const [data, setData] = useState(sessionData.scoreResult || null);
+    const initialData = sessionData.scoreResult ? {
+        score_result: sessionData.scoreResult,
+        nlp_entities: sessionData.nlpEntities || [],
+        explanation: sessionData.explanation || null
+    } : null;
+    const [data, setData] = useState(initialData);
     const [loading, setLoading] = useState(!sessionData.scoreResult);
     const navigate = useNavigate();
 

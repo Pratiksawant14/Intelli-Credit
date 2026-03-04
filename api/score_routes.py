@@ -28,7 +28,7 @@ async def score_company(parsed_data: Dict[str, Any]):
     entities = extract_entities(raw_text)
     
     # 2. Feature Engineering
-    features_df = extract_features(document_data, entities)
+    features_df = extract_features(raw_text, document_data, entities)
     
     # 3. Score
     prediction = scoring_model.predict(features_df)

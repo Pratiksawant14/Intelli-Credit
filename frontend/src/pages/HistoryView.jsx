@@ -99,9 +99,19 @@ export default function HistoryView() {
                                             {formatDate(record.generated_at)}
                                         </td>
                                         <td className="py-5 px-6 text-right">
-                                            <button className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20 hover:text-indigo-300 border border-indigo-500/20 transition-all ml-auto focus:outline-none opacity-50 group-hover:opacity-100 cursor-not-allowed" title="Direct file pointers are local in this build">
-                                                <Download size={16} /> Data Logged
-                                            </button>
+                                            {record.pdf_path ? (
+                                                <a
+                                                    href={`http://localhost:8000/${record.pdf_path.replace(/\\/g, '/')}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20 hover:text-indigo-300 border border-indigo-500/20 transition-all ml-auto focus:outline-none opacity-80 hover:opacity-100"
+                                                    title="Download this specific CAM Report"
+                                                >
+                                                    <Download size={16} /> Download PDF
+                                                </a>
+                                            ) : (
+                                                <span className="text-slate-500 text-sm italic">No file attached</span>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}

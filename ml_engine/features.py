@@ -1,17 +1,11 @@
-"""
-Feature extraction for ML models.
-Includes logic for GST-bank reconciliation, financial ratios, etc.
-"""
-
 import pandas as pd
+import re
 from typing import Dict, List
 
-def extract_features(document_data: Dict, entity_data: List[Dict]) -> pd.DataFrame:
+def extract_features(raw_text: str, document_data: Dict, entity_data: List[Dict]) -> pd.DataFrame:
     """
-    Ingests cleaned outputs from the OCR pipeline (tables, text blocks) and NLP data.
+    Ingests cleaned raw_text from OCR and applies regex extraction for real financial figures.
     Computes basic financial ratios and other features.
-    
-    Returns a pandas DataFrame with a single feature row for scoring.
     """
     feature_dict = {
         "revenue_expense_ratio": 1.0,
@@ -22,25 +16,38 @@ def extract_features(document_data: Dict, entity_data: List[Dict]) -> pd.DataFra
         "sector_risk_flag": 0
     }
     
-    # Calculate Ratios based on typical extracted financials
-    revenue = document_data.get("extracted_revenue", 1000000)
-    expenses = document_data.get("extracted_expenses", 800000)
+    # Simple regex search across raw_text to find actual financial figures!
+    text = str(raw_text).replace(',', '').lower()
+    
+    rev_match = re.search(r'revenue[^\d]*(\d+)', text)
+    revenue = float(rev_match.group(1)) if rev_match else document_data.get("extracted_revenue", 0)
+    
+    exp_match = re.search(r'expense[^\d]*(\d+)', text)
+    expenses = float(exp_match.group(1)) if exp_match else document_data.get("extracted_expenses", 0)
     
     if expenses > 0:
         feature_dict["revenue_expense_ratio"] = revenue / expenses
         
-    current_assets = document_data.get("current_assets", 500000)
-    current_liabilities = document_data.get("current_liabilities", 300000)
+    assets_match = re.search(r'current assets[^\d]*(\d+)', text)
+    current_assets = float(assets_match.group(1)) if assets_match else document_data.get("current_assets", 0)
+    
+    liab_match = re.search(r'current liabilit[^\d]*(\d+)', text)
+    current_liabilities = float(liab_match.group(1)) if liab_match else document_data.get("current_liabilities", 0)
+    
     feature_dict["working_capital"] = current_assets - current_liabilities
     
-    debt = document_data.get("total_debt", 200000)
-    equity = document_data.get("total_equity", 400000)
+    debt_match = re.search(r'total debt[^\d]*(\d+)', text)
+    debt = float(debt_match.group(1)) if debt_match else document_data.get("total_debt", 0)
+    
+    equity_match = re.search(r'total equity[^\d]*(\d+)', text)
+    equity = float(equity_match.group(1)) if equity_match else document_data.get("total_equity", 0)
+    
     if equity > 0:
         feature_dict["debt_equity_ratio"] = debt / equity
         
     # GST vs Bank match score (1.0 = perfect match, 0.0 = terrible match)
-    gst_turnover = document_data.get("gst_turnover", 1000000)
-    bank_credits = document_data.get("bank_credits", 950000)
+    gst_turnover = document_data.get("gst_turnover", 0)
+    bank_credits = document_data.get("bank_credits", 0)
     
     if max(gst_turnover, bank_credits) > 0:
         diff_pct = abs(gst_turnover - bank_credits) / max(gst_turnover, bank_credits)
@@ -51,9 +58,8 @@ def extract_features(document_data: Dict, entity_data: List[Dict]) -> pd.DataFra
     for ent in entity_data:
         if ent.get("type") in ["LAW"]:
             red_flag_count += 1
-        # Check if the extracted entity text implies a problem
-        text = ent.get("text", "").lower()
-        if "npa" in text or "insolvency" in text or "default" in text:
+        text_check = ent.get("text", "").lower()
+        if "npa" in text_check or "insolvency" in text_check or "default" in text_check:
             red_flag_count += 1
             
     feature_dict["legal_flag_count"] = red_flag_count

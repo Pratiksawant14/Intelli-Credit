@@ -47,10 +47,22 @@ export default function UploadPage() {
             }).join(' ');
 
             // We save the response and navigate to Score
+
+            // Extract a rudimentary "Company Name" from the first non-empty line of the raw text
+            const firstLine = allText.split('\n').map(l => l.trim()).filter(l => l.length > 5)[0] || "Unknown Entity";
+            const cleanCompanyName = firstLine.replace(/[^a-zA-Z0-9\s]/g, '').slice(0, 50).trim();
+
             updateSession({
+                companyName: cleanCompanyName,
                 uploadedDocuments: response.processed_files,
                 rawText: allText,
-                features: { revenue: 1200000, working_capital: 300000 }, // Mock or use extraction
+                features: {}, // Send empty, backend will use Regex to extract real financial features from rawText.
+
+                // Clear out OLD run states so ScoreView recalculates
+                scoreResult: null,
+                nlpEntities: [],
+                evidence: [],
+                camUrl: null
             });
             // Optionally store rawtext or other meta 
 

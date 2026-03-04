@@ -21,17 +21,12 @@ def fetch_evidence_for_entity(name: str, keywords: List[str] = []) -> List[Dict]
         kw_str = " OR ".join(keywords)
         query_parts.append(f"({kw_str})")
         
-    # Append 6 months limit to Google News query
-    query_parts.append("when:6m")
-    
     full_query = " AND ".join(query_parts)
     encoded_query = urllib.parse.quote(full_query)
         
     rss_url = f"https://news.google.com/rss/search?q={encoded_query}&hl=en-IN&gl=IN&ceid=IN:en"
     
     feed = feedparser.parse(rss_url)
-    
-    six_months_ago = datetime.utcnow() - timedelta(days=180)
     
     for entry in feed.entries:
         # Check date
@@ -40,8 +35,6 @@ def fetch_evidence_for_entity(name: str, keywords: List[str] = []) -> List[Dict]
             pub_date = parsedate_to_datetime(entry.published)
             # Remove timezone for simple comparison 
             pub_date = pub_date.replace(tzinfo=None)
-            if pub_date < six_months_ago:
-                continue
             date_str = pub_date.strftime("%Y-%m-%d")
         except:
             date_str = datetime.utcnow().strftime("%Y-%m-%d")
