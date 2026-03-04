@@ -5,6 +5,8 @@ import ScoreView from './pages/ScoreView';
 import EvidenceTimeline from './pages/EvidenceTimeline';
 import CAMGenerator from './pages/CAMGenerator';
 
+import HistoryView from './pages/HistoryView';
+
 function App() {
   return (
     <Routes>
@@ -13,6 +15,7 @@ function App() {
         <Route path="/score" element={<ScoreView />} />
         <Route path="/evidence" element={<EvidenceTimeline />} />
         <Route path="/cam" element={<CAMGenerator />} />
+        <Route path="/history" element={<HistoryView />} />
       </Route>
     </Routes>
   );

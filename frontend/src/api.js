@@ -35,4 +35,9 @@ export const generateCam = async (payload) => {
     return response.data;
 };
 
+export const fetchCamHistory = async () => {
+    const response = await api.get('/history/');
+    return response.data;
+};
+
 export default api;

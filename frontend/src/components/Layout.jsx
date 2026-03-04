@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { UploadCloud, CheckCircle, Search, FileText } from 'lucide-react';
+import { UploadCloud, CheckCircle, Search, FileText, History } from 'lucide-react';
 
 const Sidebar = () => {
     const steps = [
@@ -7,6 +7,7 @@ const Sidebar = () => {
         { name: 'Credit Scoring', path: '/score', icon: CheckCircle },
         { name: 'External Evidence', path: '/evidence', icon: Search },
         { name: 'CAM Generation', path: '/cam', icon: FileText },
+        { name: 'Report History', path: '/history', icon: History },
     ];
 
     return (

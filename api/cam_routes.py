@@ -52,5 +52,46 @@ async def generate_cam(payload: Dict[str, Any]):
     # 3. Render PDF
     render_cam_to_pdf(cam_data, output_path)
     
+    # 4. Save to Postgres DB
+    try:
+        supabase_url = os.getenv("SUPABASE_URL")
+        supabase_key = os.getenv("SUPABASE_KEY")
+        if supabase_url and supabase_key:
+            from supabase import create_client, Client
+            supabase: Client = create_client(supabase_url, supabase_key)
+            
+            # Map values explicitly, fallback handles missing dictionary keys safely.
+            # Handle possible string formatting in score
+            score_val = str(cam_data.get("risk_score", 0))
+            if not score_val.replace('.', '', 1).isdigit():
+                score_val = "0"
+                
+            supabase.table("cam_reports").insert({
+                "company_name": cam_data["company_name"],
+                "credit_score": float(score_val),
+                "disposition": cam_data["decision"],
+                "pdf_path": output_path,
+                "analyst_notes": cam_data.get("notes", "")
+            }).execute()
+            print("Successfully saved CAM Generation to History logs.")
+    except Exception as e:
+        print(f"Failed to log CAM to History Table: {e}")
+        
     # Return as physical file download
     return FileResponse(path=output_path, filename=output_filename, media_type='application/pdf')
+
+@router.get("/history/")
+async def fetch_cam_history():
+    """Returns the most recent 10 generated CAMs from Supabase."""
+    supabase_url = os.getenv("SUPABASE_URL")
+    supabase_key = os.getenv("SUPABASE_KEY")
+    if supabase_url and supabase_key:
+        try:
+            from supabase import create_client, Client
+            supabase: Client = create_client(supabase_url, supabase_key)
+            result = supabase.table("cam_reports").select("*").order("generated_at", desc=True).limit(10).execute()
+            return result.data
+        except Exception as e:
+            print(f"Failed retrieving CAM history: {e}")
+            return []
+    return []
