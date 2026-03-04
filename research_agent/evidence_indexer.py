@@ -1,14 +1,13 @@
 """
-Embeddings and retrieval storage integration using sentence-transformers and FAISS/Pinecone.
+Embeddings and retrieval storage integration using sentence-transformers and Supabase pgvector.
 """
+import os
 from typing import List, Dict
-import numpy as np
-try:
-    import faiss
-    FAISS_AVAILABLE = True
-except ImportError:
-    FAISS_AVAILABLE = False
 from sentence_transformers import SentenceTransformer
+from supabase import create_client, Client
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Load model globally to avoid reloading overhead per call
 try:
@@ -17,22 +16,27 @@ except Exception as e:
     print(f"Failed to load SentenceTransformer: {e}")
     embedding_model = None
 
-# In-memory generic store for demo (Ideally Pinecone or persisted FAISS)
-IN_MEMORY_DB = []
-IN_MEMORY_INDEX = None
+# Initialize Supabase client
+supabase_url = os.getenv("SUPABASE_URL")
+supabase_key = os.getenv("SUPABASE_KEY")
+
+if supabase_url and supabase_key:
+    supabase: Client = create_client(supabase_url, supabase_key)
+    print("Successfully connected to Supabase Vector DB.")
+else:
+    supabase = None
+    print("WARNING: Supabase URL or Key not found in environment. Cannot connect to DB.")
 
 def index_evidence(entity_name: str, evidence_list: List[Dict]) -> None:
     """
-    Generate embeddings of article content and upsert into vector database.
-    Because we don't have Pinecone instantly available during this phase, 
-    we use a mock FAISS in-memory index + basic storage array.
+    Generate embeddings of article content and upsert into Supabase pgvector database.
     """
-    global IN_MEMORY_DATABASE, IN_MEMORY_INDEX
-    
-    if not embedding_model or not FAISS_AVAILABLE:
-        print("Embeddings model or FAISS not available. Skipping true indexing.")
+    if not embedding_model or not supabase:
+        print("Embeddings model or Supabase not available. Skipping true indexing.")
         return
         
+    records = []
+    
     for item in evidence_list:
         article = item.get("article", {})
         text_to_embed = f"{article.get('title', '')} {article.get('content', '')}"
@@ -40,50 +44,67 @@ def index_evidence(entity_name: str, evidence_list: List[Dict]) -> None:
         if not text_to_embed.strip():
             continue
             
-        vector = embedding_model.encode(text_to_embed)
+        # Encode natively via sentence-transformers
+        vector = embedding_model.encode(text_to_embed).tolist()
         
-        # Add to local FAISS index if initializing
-        if IN_MEMORY_INDEX is None:
-            dimension = vector.shape[0]
-            IN_MEMORY_INDEX = faiss.IndexFlatL2(dimension)
-            
-        vector_np = np.array([vector], dtype=np.float32)
-        IN_MEMORY_INDEX.add(vector_np)
-        
-        # Save metadata reference
-        IN_MEMORY_DB.append({
-            "entity": entity_name,
-            "evidence": item, # fully resolved chunk
-            "vector_id": len(IN_MEMORY_DB)
+        # Build document for DB schema
+        records.append({
+            "entity_name": entity_name,
+            "title": article.get("title", ""),
+            "content": article.get("content", ""),
+            "url": article.get("url", ""),
+            "source": article.get("source", ""),
+            "published_date": article.get("date", ""),
+            "tags": item.get("tags", []),
+            "embedding": vector
         })
         
-    print(f"Indexed {len(evidence_list)} articles for {entity_name}")
+    if records:
+        try:
+            # Batch upsert via Supabase Python client
+            response = supabase.table("evidence").insert(records).execute()
+            print(f"Indexed {len(records)} articles for {entity_name} smoothly in Supabase DB")
+        except Exception as e:
+            print(f"Failed to insert evidence into Supabase: {e}")
 
 def query_evidence(entity_name: str, query: str, top_k: int = 3) -> List[Dict]:
     """
-    Search function to retrieve top k related articles based on sentence similarity.
+    Search function to retrieve top k related articles based on pgvector similarity via Postgres RPC.
     """
-    if not embedding_model or not FAISS_AVAILABLE or IN_MEMORY_INDEX is None:
+    if not embedding_model or not supabase:
+        print("Database offline. Returning []")
         return []
         
-    query_vector = embedding_model.encode(query)
-    query_np = np.array([query_vector], dtype=np.float32)
+    # Convert arbitrary query into match vector
+    query_vector = embedding_model.encode(query).tolist()
     
-    # Perform Search
-    distances, indices = IN_MEMORY_INDEX.search(query_np, min(top_k, len(IN_MEMORY_DB)))
-    
-    results = []
-    for i, idx in enumerate(indices[0]):
-        if idx == -1: continue # No more results
+    try:
+        # Call the custom Postgres function we just deployed (`match_evidence`)
+        response = supabase.rpc("match_evidence", {
+            "query_embedding": query_vector,
+            "match_threshold": 0.5,
+            "match_count": top_k,
+            "target_entity": entity_name
+        }).execute()
         
-        # Retrieve mapped metadata
-        record = IN_MEMORY_DB[idx]
-        # Could filter by entity_name here if needed
-        # if record["entity"] != entity_name: continue
+        results = []
+        for row in response.data:
+            results.append({
+                "article": {
+                    "title": row.get("title"),
+                    "content": row.get("content"),
+                    "url": row.get("url"),
+                    "source": row.get("source"),
+                    "date": row.get("published_date")
+                },
+                "matched_entity": row.get("entity_name"),
+                "tags": row.get("tags", []),
+                "search_distance": round(row.get("similarity", 0), 4)
+            })
+            
+        print(f"Vector retrieved {len(results)} most relevant signals from Database.")
+        return results
         
-        result_item = record["evidence"]
-        # Inject the retrieval score
-        result_item["search_distance"] = round(float(distances[0][i]), 4)
-        results.append(result_item)
-        
-    return results
+    except Exception as e:
+        print(f"Failed to query Supabase: {e}")
+        return []
