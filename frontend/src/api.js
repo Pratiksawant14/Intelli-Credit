@@ -35,8 +35,18 @@ export const generateCam = async (payload) => {
     return response.data;
 };
 
-export const fetchCamHistory = async () => {
-    const response = await api.get('/history/');
+export const fetchCamHistory = async (userId) => {
+    const response = await api.get('/history/', { params: { user_id: userId } });
+    return response.data;
+};
+
+export const registerUser = async (payload) => {
+    const response = await api.post('/register/', payload);
+    return response.data;
+};
+
+export const loginUser = async (payload) => {
+    const response = await api.post('/login/', payload);
     return response.data;
 };
 

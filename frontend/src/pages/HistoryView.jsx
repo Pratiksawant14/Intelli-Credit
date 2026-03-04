@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { History, FileText, Download, Target, CheckCircle2, AlertTriangle, XCircle, Search } from 'lucide-react';
 import { fetchCamHistory } from '../api';
+import { useAppContext } from '../context/AppContext';
 
 export default function HistoryView() {
+    const { sessionData } = useAppContext();
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const loadHistory = async () => {
             try {
-                const data = await fetchCamHistory();
+                const data = await fetchCamHistory(sessionData?.user?.id);
                 setHistory(data);
             } catch (err) {
                 console.error("Failed to load History:", err);

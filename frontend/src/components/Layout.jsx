@@ -1,7 +1,9 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { UploadCloud, CheckCircle, Search, FileText, History } from 'lucide-react';
+import { UploadCloud, CheckCircle, Search, FileText, History, LogOut, User } from 'lucide-react';
+import { useAppContext } from '../context/AppContext';
 
 const Sidebar = () => {
+    const { sessionData, updateSession } = useAppContext();
     const steps = [
         { name: 'Document Ingestion', path: '/', icon: UploadCloud },
         { name: 'Credit Scoring', path: '/score', icon: CheckCircle },
@@ -44,6 +46,21 @@ const Sidebar = () => {
             </nav>
 
             <div className="mt-auto mb-6 text-xs text-slate-500 z-10 px-4">
+                <div className="flex items-center gap-2 justify-between bg-slate-800/50 py-2 px-3 rounded-lg border border-slate-700/80 mb-4 shadow-sm">
+                    <div className="flex items-center gap-2 overflow-hidden text-slate-300">
+                        <User size={14} className="text-slate-400 flex-shrink-0" />
+                        <span className="truncate max-w-[120px] font-medium" title={sessionData?.user?.email}>
+                            {sessionData?.user?.email?.split('@')[0] || "Analyst"}
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => updateSession({ user: null })}
+                        className="text-slate-500 hover:text-rose-400 p-1.5 transition-colors cursor-pointer rounded-md hover:bg-rose-500/10"
+                        title="Sign Out"
+                    >
+                        <LogOut size={16} />
+                    </button>
+                </div>
                 <p>AI Appraised • Secure</p>
                 <p>Intelli-Credit Engine v1.0</p>
             </div>

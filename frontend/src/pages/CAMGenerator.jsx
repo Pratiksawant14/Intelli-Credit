@@ -24,7 +24,8 @@ export default function CAMGenerator() {
                 ml_output: sessionData.scoreResult || {},
                 entity_data: sessionData.nlpEntities || [],
                 evidence: sessionData.evidence || [],
-                notes: analystNotes
+                notes: analystNotes,
+                user_id: sessionData?.user?.id
             };
 
             const responseBlob = await generateCam(payload);

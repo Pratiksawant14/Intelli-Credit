@@ -10,6 +10,7 @@ export const AppProvider = ({ children }) => {
             try { return JSON.parse(saved); } catch (e) { }
         }
         return {
+            user: null,
             companyName: '',
             uploadedDocuments: [],
             features: {},

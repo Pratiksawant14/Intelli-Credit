@@ -6,8 +6,16 @@ import EvidenceTimeline from './pages/EvidenceTimeline';
 import CAMGenerator from './pages/CAMGenerator';
 
 import HistoryView from './pages/HistoryView';
+import LoginPage from './pages/LoginPage';
+import { useAppContext } from './context/AppContext';
 
 function App() {
+  const { sessionData } = useAppContext();
+
+  if (!sessionData?.user) {
+    return <LoginPage />;
+  }
+
   return (
     <Routes>
       <Route element={<Layout />}>

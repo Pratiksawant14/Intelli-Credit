@@ -71,7 +71,8 @@ async def generate_cam(payload: Dict[str, Any]):
                 "credit_score": float(score_val),
                 "disposition": cam_data["decision"],
                 "pdf_path": output_path,
-                "analyst_notes": cam_data.get("notes", "")
+                "analyst_notes": cam_data.get("notes", ""),
+                "user_id": payload.get("user_id")
             }).execute()
             print("Successfully saved CAM Generation to History logs.")
     except Exception as e:
@@ -81,7 +82,7 @@ async def generate_cam(payload: Dict[str, Any]):
     return FileResponse(path=output_path, filename=output_filename, media_type='application/pdf')
 
 @router.get("/history/")
-async def fetch_cam_history():
+async def fetch_cam_history(user_id: str = None):
     """Returns the most recent 10 generated CAMs from Supabase."""
     supabase_url = os.getenv("SUPABASE_URL")
     supabase_key = os.getenv("SUPABASE_KEY")
@@ -89,7 +90,10 @@ async def fetch_cam_history():
         try:
             from supabase import create_client, Client
             supabase: Client = create_client(supabase_url, supabase_key)
-            result = supabase.table("cam_reports").select("*").order("generated_at", desc=True).limit(10).execute()
+            query = supabase.table("cam_reports").select("*")
+            if user_id:
+                query = query.eq("user_id", user_id)
+            result = query.order("generated_at", desc=True).limit(10).execute()
             return result.data
         except Exception as e:
             print(f"Failed retrieving CAM history: {e}")

@@ -8,6 +8,7 @@ from api.upload_routes import router as upload_router
 from api.score_routes import router as score_router
 from api.cam_routes import router as cam_router
 from api.search_routes import router as search_router
+from api.auth_routes import router as auth_router
 
 app = FastAPI(
     title="Intelli-Credit API",
@@ -29,6 +30,7 @@ app.include_router(upload_router, prefix="/api/v1")
 app.include_router(score_router, prefix="/api/v1")
 app.include_router(cam_router, prefix="/api/v1")
 app.include_router(search_router, prefix="/api/v1")
+app.include_router(auth_router, prefix="/api/v1")
 
 @app.get("/")
 async def root():
