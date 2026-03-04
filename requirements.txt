@@ -1,0 +1,44 @@
+# OCR & PDF Parsing
+pytesseract
+ocrmypdf
+PyMuPDF  # fitz
+camelot-py[cv]
+pdf2image
+opencv-python
+langdetect
+pandas
+
+# NLP & Text
+transformers
+spacy
+sentence-transformers
+rapidfuzz
+python-Levenshtein
+
+# ML & Scoring
+lightgbm
+scikit-learn
+optuna
+shap
+lime
+
+# Web Research
+scrapy
+newspaper3k
+feedparser
+faiss-cpu
+
+# Database & Vector Store
+supabase
+pinecone-client
+
+# API & Orchestration
+fastapi
+uvicorn
+python-multipart
+prefect
+
+# Template Generation
+jinja2
+reportlab
+openai
