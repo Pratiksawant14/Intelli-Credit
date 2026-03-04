@@ -33,7 +33,7 @@ class CreditScoringModel:
                 feature_name=["revenue_expense_ratio", "working_capital", "debt_equity_ratio", 
                               "gst_bank_match_score", "legal_flag_count", "sector_risk_flag"]
             )
-            params = {'objective': 'regression', 'verbose': -1}
+            params = {'objective': 'regression', 'verbose': -1, 'min_data_in_leaf': 1}
             self.model = lgb.train(params, train_data, num_boost_round=10)
             
             # Save the mock model for future loads

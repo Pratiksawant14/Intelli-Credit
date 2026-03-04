@@ -21,7 +21,7 @@ export default function ScoreView() {
         try {
             // Typically we'd pass raw_text and document_data properly 
             const payload = {
-                raw_text: "Orbit Holdings Pvt Ltd mentioned NPA in court.",
+                raw_text: sessionData.rawText || "No text provided.",
                 document_data: sessionData.features || {}
             };
 

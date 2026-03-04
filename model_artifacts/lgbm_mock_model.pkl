@@ -6,31 +6,203 @@ label_index=0
 max_feature_idx=5
 objective=regression
 feature_names=revenue_expense_ratio working_capital debt_equity_ratio gst_bank_match_score legal_flag_count sector_risk_flag
-feature_infos=none none none none none none
-tree_sizes=239
+feature_infos=none [-50000:200000] none none [0:3] [0:1]
+tree_sizes=302 307 305 307 308 309 308 308 310 310
 
 Tree=0
-num_leaves=1
+num_leaves=2
 num_cat=0
-split_feature=
-split_gain=
-threshold=
-decision_type=
-left_child=
-right_child=
-leaf_value=0.4999999888241291
-leaf_weight=
-leaf_count=2
-internal_value=
-internal_weight=
-internal_count=
+split_feature=1
+split_gain=0.32
+threshold=1.0000000180025095e-35
+decision_type=2
+left_child=-1
+right_child=-2
+leaf_value=0.53999998643994329 0.45999999120831492
+leaf_weight=1 1
+leaf_count=1 1
+internal_value=0.5
+internal_weight=2
+internal_count=2
 is_linear=0
 shrinkage=1
+
+
+Tree=1
+num_leaves=2
+num_cat=0
+split_feature=1
+split_gain=0.2592
+threshold=1.0000000180025095e-35
+decision_type=2
+left_child=-1
+right_child=-2
+leaf_value=0.035999998450279201 -0.035999998450279201
+leaf_weight=1 1
+leaf_count=1 1
+internal_value=0
+internal_weight=2
+internal_count=2
+is_linear=0
+shrinkage=0.1
+
+
+Tree=2
+num_leaves=2
+num_cat=0
+split_feature=1
+split_gain=0.209952
+threshold=1.0000000180025095e-35
+decision_type=2
+left_child=-1
+right_child=-2
+leaf_value=0.0324000000953674 -0.0324000000953674
+leaf_weight=1 1
+leaf_count=1 1
+internal_value=0
+internal_weight=2
+internal_count=2
+is_linear=0
+shrinkage=0.1
+
+
+Tree=3
+num_leaves=2
+num_cat=0
+split_feature=1
+split_gain=0.170061
+threshold=1.0000000180025095e-35
+decision_type=2
+left_child=-1
+right_child=-2
+leaf_value=0.02915999889373776 -0.02915999889373776
+leaf_weight=1 1
+leaf_count=1 1
+internal_value=0
+internal_weight=2
+internal_count=2
+is_linear=0
+shrinkage=0.1
+
+
+Tree=4
+num_leaves=2
+num_cat=0
+split_feature=1
+split_gain=0.13775
+threshold=1.0000000180025095e-35
+decision_type=2
+left_child=-1
+right_child=-2
+leaf_value=0.026243999600410434 -0.026243999600410434
+leaf_weight=1 1
+leaf_count=1 1
+internal_value=0
+internal_weight=2
+internal_count=2
+is_linear=0
+shrinkage=0.1
+
+
+Tree=5
+num_leaves=2
+num_cat=0
+split_feature=1
+split_gain=0.111577
+threshold=1.0000000180025095e-35
+decision_type=2
+left_child=-1
+right_child=-2
+leaf_value=0.023619599640369391 -0.023619599640369391
+leaf_weight=1 1
+leaf_count=1 1
+internal_value=0
+internal_weight=2
+internal_count=2
+is_linear=0
+shrinkage=0.1
+
+
+Tree=6
+num_leaves=2
+num_cat=0
+split_feature=1
+split_gain=0.0903774
+threshold=1.0000000180025095e-35
+decision_type=2
+left_child=-1
+right_child=-2
+leaf_value=0.02125763893127439 -0.02125763893127439
+leaf_weight=1 1
+leaf_count=1 1
+internal_value=0
+internal_weight=2
+internal_count=2
+is_linear=0
+shrinkage=0.1
+
+
+Tree=7
+num_leaves=2
+num_cat=0
+split_feature=1
+split_gain=0.0732057
+threshold=1.0000000180025095e-35
+decision_type=2
+left_child=-1
+right_child=-2
+leaf_value=0.01913187503814695 -0.01913187503814695
+leaf_weight=1 1
+leaf_count=1 1
+internal_value=0
+internal_weight=2
+internal_count=2
+is_linear=0
+shrinkage=0.1
+
+
+Tree=8
+num_leaves=2
+num_cat=0
+split_feature=1
+split_gain=0.0592966
+threshold=1.0000000180025095e-35
+decision_type=2
+left_child=-1
+right_child=-2
+leaf_value=0.017218688130378704 -0.017218688130378704
+leaf_weight=1 1
+leaf_count=1 1
+internal_value=0
+internal_weight=2
+internal_count=2
+is_linear=0
+shrinkage=0.1
+
+
+Tree=9
+num_leaves=2
+num_cat=0
+split_feature=1
+split_gain=0.0480303
+threshold=1.0000000180025095e-35
+decision_type=2
+left_child=-1
+right_child=-2
+leaf_value=0.015496818721294388 -0.015496818721294388
+leaf_weight=1 1
+leaf_count=1 1
+internal_value=0
+internal_weight=2
+internal_count=2
+is_linear=0
+shrinkage=0.1
 
 
 end of trees
 
 feature_importances:
+working_capital=10
 
 parameters:
 [boosting: gbdt]
@@ -51,7 +223,7 @@ parameters:
 [force_row_wise: 0]
 [histogram_pool_size: -1]
 [max_depth: -1]
-[min_data_in_leaf: 20]
+[min_data_in_leaf: 1]
 [min_sum_hessian_in_leaf: 0.001]
 [bagging_fraction: 1]
 [pos_bagging_fraction: 1]

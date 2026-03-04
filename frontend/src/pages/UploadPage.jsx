@@ -38,11 +38,18 @@ export default function UploadPage() {
 
             // We expect the backend to return status: 'success', processed_files: [...]
             // But for the pipeline, let's aggregate all raw text into the session
-            const allText = response.processed_files.map(f => f.raw_ocr).join(' ');
+            const allText = response.processed_files.map(f => {
+                let text = f.raw_ocr || "";
+                if (f.extracted_text_blocks && f.extracted_text_blocks.length > 0) {
+                    text += " " + f.extracted_text_blocks.map(b => b.text).join(' ');
+                }
+                return text;
+            }).join(' ');
 
             // We save the response and navigate to Score
             updateSession({
                 uploadedDocuments: response.processed_files,
+                rawText: allText,
                 features: { revenue: 1200000, working_capital: 300000 }, // Mock or use extraction
             });
             // Optionally store rawtext or other meta 

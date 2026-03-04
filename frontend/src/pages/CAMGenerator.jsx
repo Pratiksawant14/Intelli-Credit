@@ -29,8 +29,9 @@ export default function CAMGenerator() {
 
             const responseBlob = await generateCam(payload);
 
-            // Create a URL for the downloaded PDF blob
-            const url = window.URL.createObjectURL(new Blob([responseBlob]));
+            // Create a URL for the downloaded PDF blob with an explicit MIME type
+            const blob = new Blob([responseBlob], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
             setCamUrl(url);
         } catch (err) {
             console.error("CAM Generation Failed:", err);
@@ -108,6 +109,8 @@ export default function CAMGenerator() {
                     <a
                         href={camUrl}
                         download={`Credit_Memo_${company.replace(/\s+/g, '_')}.pdf`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="btn-primary flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 border-none shadow-[0_0_20px_rgba(16,185,129,0.4)] px-8 py-4 rounded-full font-bold text-xl"
                     >
                         <Download size={24} /> Download Final PDF
