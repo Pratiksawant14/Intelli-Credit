@@ -40,6 +40,8 @@ async def generate_cam(payload: Dict[str, Any]):
         "conditions_summary": summaries["conditions_summary"],
         "recommendation": summaries["recommendation"],
         
+        "notes": payload.get("notes", ""),
+        
         "evidence_snippets": payload.get("evidence", [])
     }
     

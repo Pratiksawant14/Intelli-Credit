@@ -94,24 +94,37 @@ export default function CAMGenerator() {
                 </div>
             </div>
 
-            {/* Download Action */}
+            {/* PDF Preview & Download Action */}
             {camUrl && (
-                <div className="glass-panel p-10 flex flex-col items-center justify-center animate-in zoom-in-95 duration-500 border border-emerald-500/50 relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors"></div>
-                    <div className="w-24 h-24 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(16,185,129,0.3)]">
-                        <FileText size={48} />
+                <div className="glass-panel p-8 flex flex-col items-center justify-center animate-in zoom-in-95 duration-500 border border-emerald-500/50 relative overflow-hidden w-full">
+                    <div className="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors pointer-events-none"></div>
+
+                    <div className="flex items-center gap-3 mb-6 relative z-10">
+                        <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                            <FileText size={24} />
+                        </div>
+                        <h3 className="text-2xl font-bold text-slate-200">Live CAM Preview</h3>
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-200 mb-2">CAM Successfully Generated</h3>
-                    <p className="text-slate-400 max-w-lg text-center mb-8">
-                        The internal LLMs have rendered your ML scores, extracted NLP flags, and web timeline into a fully compliant standard PDF format.
+
+                    <p className="text-slate-400 max-w-lg text-center mb-6 relative z-10">
+                        Review the fully assembled Credit Appraisal Memo below.
                     </p>
+
+                    {/* Interactive PDF Preview Window */}
+                    <div className="w-full h-[600px] mb-8 rounded-xl overflow-hidden border-2 border-slate-700/50 shadow-2xl relative z-10 bg-slate-900/50">
+                        <iframe
+                            src={camUrl}
+                            className="w-full h-full border-none"
+                            title="Credit Memo Preview"
+                        />
+                    </div>
 
                     <a
                         href={camUrl}
                         download={`Credit_Memo_${company.replace(/\s+/g, '_')}.pdf`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-primary flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 border-none shadow-[0_0_20px_rgba(16,185,129,0.4)] px-8 py-4 rounded-full font-bold text-xl"
+                        className="btn-primary flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 border-none shadow-[0_0_20px_rgba(16,185,129,0.4)] px-8 py-4 rounded-full font-bold text-xl relative z-10"
                     >
                         <Download size={24} /> Download Final PDF
                     </a>

@@ -76,6 +76,13 @@ def render_cam_to_pdf(data: Dict[str, Any], output_path: str) -> None:
     elements.append(Paragraph("<b>Final Recommendation</b>", styles['SectionHeader']))
     elements.append(Paragraph(f"<b>{data.get('recommendation', 'N/A')}</b>", styles['InfoItem']))
     
+    # Analyst Overlay Notes
+    analyst_notes = data.get('notes', '').strip()
+    if analyst_notes:
+        elements.append(Spacer(1, 12))
+        elements.append(Paragraph("<b>Human Analyst Overlay Notes</b>", styles['SectionHeader']))
+        elements.append(Paragraph(f"<i>{analyst_notes}</i>", styles['Normal']))
+    
     # Build it
     doc.build(elements)
     print(f"CAM successfully generated at: {output_path}")
