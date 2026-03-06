@@ -142,7 +142,8 @@ export default function ScoreView() {
     }
 
     const curData = data || sessionData;
-    const decision = curData?.score_result?.decision || curData?.decision || "WATCHLIST";
+    const getTier = (score) => score >= 70 ? "APPROVE" : score >= 50 ? "WATCHLIST" : "REJECT";
+    const decision = getTier(displayScore);
     const shapFeatures = curData?.explanation?.top_features || curData?.score_result?.top_features || [];
 
     // Waterfall prep
@@ -204,8 +205,8 @@ export default function ScoreView() {
                     </div>
 
                     <div className={`px-6 py-2 rounded-full font-bold text-sm tracking-wider shadow-lg animate-[pulse_2s_ease-in-out_infinite] border ${decision === 'APPROVE' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' :
-                            decision === 'WATCHLIST' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' :
-                                'bg-red-500/20 text-red-400 border-red-500/50'
+                        decision === 'WATCHLIST' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' :
+                            'bg-red-500/20 text-red-400 border-red-500/50'
                         }`}>
                         {decision.toUpperCase()}
                     </div>

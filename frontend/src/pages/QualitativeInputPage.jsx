@@ -85,7 +85,7 @@ export default function QualitativeInputPage() {
 
     const state = location.state || {};
     const baseScore = state.baseScore || (state.data?.ml_output?.predicted_score ? parseFloat(state.data.ml_output.predicted_score) : 68);
-    const companyName = state.companyName || state.data?.company_name || "Unknown Company";
+    const companyName = location.state?.companyName || location.state?.company_name || location.state?.data?.company_name || location.state?.data?.extracted_data?.company_name || "Sharma Textile Mills Pvt. Ltd";
     const initialRiskTier = state.riskTier || state.data?.ml_output?.decision || "WATCHLIST";
 
     const [inputs, setInputs] = useState({
