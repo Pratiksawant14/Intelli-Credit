@@ -97,7 +97,7 @@ export default function ScoreView() {
                         }
                     };
 
-                    const termRes = await fetch('http://localhost:8000/api/v1/recommendation/terms', {
+                    const termRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/recommendation/terms`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(termsPayload)
@@ -115,7 +115,7 @@ export default function ScoreView() {
                         shap_values: shapDict
                     };
 
-                    const cfRes = await fetch('http://localhost:8000/api/v1/recommendation/counterfactual', {
+                    const cfRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/recommendation/counterfactual`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(cfPayload)

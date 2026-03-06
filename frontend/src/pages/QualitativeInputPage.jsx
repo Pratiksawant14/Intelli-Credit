@@ -117,7 +117,7 @@ export default function QualitativeInputPage() {
                 company_name: companyName,
                 inputs: currentInputs
             };
-            const res = await axios.post("http://localhost:8000/api/v1/qualitative/adjust/", payload);
+            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/qualitative/adjust/`, payload);
             setApiResult(res.data);
             targetScoreRef.current = res.data.adjusted_score;
         } catch (error) {

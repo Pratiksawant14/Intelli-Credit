@@ -42,3 +42,14 @@ prefect
 jinja2
 reportlab
 openai
+
+# Web & Networking
+httpx
+
+# Auth & Security
+python-jose
+bcrypt
+
+# Math & Data
+pydantic
+scipy
