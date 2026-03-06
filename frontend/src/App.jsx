@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import UploadPage from './pages/UploadPage';
 import ScoreView from './pages/ScoreView';
+import QualitativeInputPage from './pages/QualitativeInputPage';
 import EvidenceTimeline from './pages/EvidenceTimeline';
 import CAMGenerator from './pages/CAMGenerator';
 
@@ -21,6 +22,7 @@ function App() {
       <Route element={<Layout />}>
         <Route path="/" element={<UploadPage />} />
         <Route path="/score" element={<ScoreView />} />
+        <Route path="/qualitative-input" element={<QualitativeInputPage />} />
         <Route path="/evidence" element={<EvidenceTimeline />} />
         <Route path="/cam" element={<CAMGenerator />} />
         <Route path="/history" element={<HistoryView />} />
