@@ -4,11 +4,13 @@ ocrmypdf
 PyMuPDF  # fitz
 camelot-py[cv]
 pdf2image
-opencv-python
+opencv-python-headless
 langdetect
 pandas
 
 # NLP & Text
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
 transformers
 spacy
 sentence-transformers

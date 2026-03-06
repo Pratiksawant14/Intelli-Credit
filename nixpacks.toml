@@ -1,0 +1,5 @@
+[phases.setup]
+aptPkgs = ["...", "tesseract-ocr", "tesseract-ocr-eng", "libsm6", "libxext6", "ghostscript", "poppler-utils"]
+
+[phases.build]
+cmds = ["...", "python -m spacy download en_core_web_sm"]
