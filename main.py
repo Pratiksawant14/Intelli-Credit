@@ -33,6 +33,8 @@ app.add_middleware(
         "http://localhost:5173",
         "http://localhost:5174",
         "https://*.vercel.app",
+        "https://*.railway.app",
+        "https://intelli-credit-production.up.railway.app",
         "https://your-production-domain.vercel.app"
     ],
     allow_credentials=True,
